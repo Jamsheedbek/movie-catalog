@@ -1,118 +1,175 @@
-var movie = document.getElementById('movies');
-var bookmarkedmovies = document.getElementById('bookmarkedmovies');
-var bookmarked = [];
+let movie = document.getElementById('movies');
+let bookmarkedmovies = document.getElementById('bookmarkedmovies');
+let search = document.getElementById('search');
+let bookmarked = [];
+var finalMovies;
 
-for(var i=0; i<10; i++){
-    var card = document.createElement('li');
-    card.setAttribute('class', 'col-6 mb-4');
-    movie.appendChild(card);
+search.addEventListener('click', e => {
 
-    var cardWrapper = document.createElement('div');
-    cardWrapper.setAttribute('class', 'card');
-    // cardWrapper.setAttribute('style', 'width: 18rem;');
-    card.appendChild(cardWrapper);
+  movie.innerHTML = ''
 
-    var cardImage = document.createElement('img');
-    cardImage.setAttribute('src', 'https://picsum.photos/id/'+ i +'/200/150');
-    cardImage.setAttribute('class', 'card-img-top');
-    cardWrapper.appendChild(cardImage);
+  // search pattern
+  let pattern = new RegExp(`${movieName.value}`, 'gi')
+  // filter by movie name
+  finalMovies = movies.filter(item => pattern.test(item.title))
+  // filter by rating
+  let ratingScale = document.getElementById('rating').value
 
-    var cardBody = document.createElement('div');
-    cardBody.setAttribute('class', 'card-body');
-    cardWrapper.appendChild(cardBody);
+  if (ratingScale >= 0 && ratingScale <= 10) {
+    finalMovies = finalMovies.filter(e => e.imdbRating >= ratingScale)
+  } else {
+    alert("To'g'ri qiymat kiriting!")
+    return
+  }
 
-    var cardTitle = document.createElement('h5');
-    cardTitle.setAttribute('class', 'card-title text-truncate');
-    cardTitle.textContent = movies[i].Title;
-    cardBody.appendChild(cardTitle);
+  // filter by category
+  let movieCategory = document.getElementById('category').value
+  if (movieCategory) {
+    finalMovies = finalMovies.filter(e => e.categories.includes(movieCategory))
+  }
 
-    var cardText = document.createElement('p');
-    cardText.setAttribute('class', 'card-text');
-    cardText.textContent = movies[i].movie_year;
-    cardBody.appendChild(cardText);
-
-    var cardText = document.createElement('p');
-    cardText.setAttribute('class', 'card-text');
-    cardText.textContent = movies[i].imdb_rating;
-    cardBody.appendChild(cardText);
-
-    var watchTrailer = document.createElement('button');
-    watchTrailer.setAttribute('class', 'btn btn-outline-primary p-2 me-3');
-    watchTrailer.setAttribute('type', 'button');
-    watchTrailer.setAttribute('id', 'watchTrailer');
-    watchTrailer.textContent = 'Watch trailer';
-    cardBody.appendChild(watchTrailer);
-
-    var moreInfo = document.createElement('button');
-    moreInfo.setAttribute('class', 'btn btn-outline-secondary p-2 me-3');
-    moreInfo.setAttribute('type', 'button');
-    moreInfo.setAttribute('id', 'moreInfo');
-    moreInfo.textContent = 'More info';
-    cardBody.appendChild(moreInfo);
-
-    var bookmark = document.createElement('button');
-    bookmark.setAttribute('class', 'btn btn-outline-success p-2');
-    bookmark.setAttribute('type', 'button');
-    bookmark.setAttribute('id', 'bookmark');
-    bookmark.textContent = 'Bookmark';
-    bookmark.dataset.id = i;
-    cardBody.appendChild(bookmark);
-}
-
-
-movie.addEventListener('click', function(e){
-    var a = Number(e.target.dataset.id);
-    console.log(a)
-    function addMovies(arr) {
-        for (var i = 0; i < 1; i++) {
-            
-            var bookmarkedMovie = document.createElement('li');
-            bookmarkedmovies.appendChild(bookmarkedMovie);
-
-            var wrapper = document.createElement('div');
-            wrapper.setAttribute('class', 'p-2 border border-2');
-            bookmarkedMovie.appendChild(wrapper);
-
-            var movieName = document.createElement('p');
-            movieName.setAttribute('class', 'h4');
-            movieName.textContent = arr[arr.length -1];
-            wrapper.appendChild(movieName);
-
-            var buttonWrapper = document.createElement('div');
-            wrapper.appendChild(buttonWrapper);
-
-            var remove = document.createElement('button');
-            remove.setAttribute('type', 'button');
-            remove.setAttribute('id', 'remove')
-            remove.setAttribute('class', 'btn btn-danger');
-            remove.dataset.id = i;
-            remove.textContent = 'Remove'
-            buttonWrapper.appendChild(remove);
-            
-        }
+  
+  if(selectType){
+    if(selectType.value == 'yearLow'){
+      finalMovies.sort((a, b) => a.year - b.year)
     }
-    var b = bookmarked.length+1;
-    for(var i=0; i <b; i++){
-        if(bookmarked.length==0){
-            bookmarked.push(movies[a].Title);
-        }else if(bookmarked[i]!=movies[a].Title){
-            bookmarked.push(movies[a].Title)
-        }
+
+    if(selectType.value == 'yearHigh'){
+      finalMovies.sort((a, b) => b.year - a.year)
     }
-    console.log(bookmarked[0]!=movies[a].Title)
-    console.log(bookmarked);
 
+    if(selectType.value == 'ratingLow'){
+      finalMovies.sort((a, b) => a.imdbRating - b.imdbRating)
+    }
 
-    addMovies(bookmarked);
+    if(selectType.value == 'ratingHigh'){
+      finalMovies.sort((a, b) => b.imdbRating - a.imdbRating)
+    }
+
+    if(selectType.value == 'nameA'){
+      finalMovies.sort((a, b) => a.title.localeCompare(b.title))
+    }
+    if(selectType.value == 'nameZ'){
+      finalMovies.sort((a, b) => b.title.localeCompare(a.title))
+    }
+  }
+  
+  result.textContent = finalMovies.length
+      
+  finalMovies.forEach((item, i) => {
+
+    // card
+    let CARD = document.createElement('LI')
+    CARD.classList.add('card', 'col-6', 'pt-3')
+    movie.appendChild(CARD)
+
+    // image
+    let IMAGE = document.createElement('img')
+    IMAGE.width = 400
+    IMAGE.height = 180
+    IMAGE.classList.add('card-img-top', 'img-fluid')
+    IMAGE.src = item.smallThumbnail
+    CARD.appendChild(IMAGE)
+
+    // card-body
+    let CARDBODY = document.createElement('DIV')
+    CARDBODY.classList.add('card-body')
+
+    // movie name
+    let MOVIENAME = document.createElement('H4')
+    MOVIENAME.classList.add('h4', 'text-truncate')
+    MOVIENAME.textContent = item.title
+    CARDBODY.appendChild(MOVIENAME)
+
+    // movie year
+    let MOVIEYEAR = document.createElement('H6')
+    MOVIEYEAR.classList.add('h6')
+    MOVIEYEAR.textContent = item.year
+    CARDBODY.appendChild(MOVIEYEAR)
+
+    // movie rating
+    let MOVIERATING = document.createElement('H6')
+    MOVIERATING.classList.add('h6')
+    MOVIERATING.textContent = item.imdbRating
+    CARDBODY.appendChild(MOVIERATING)
+
+    // movie categories
+    let CATEGORIES = document.createElement('H6')
+    CATEGORIES.classList.add('h6','text-truncate')
+    CATEGORIES.textContent = item.categories.join(', ').toLowerCase()
+    CARDBODY.appendChild(CATEGORIES)
+
+    // trailer
+    let TRAILER = document.createElement('a')
+    TRAILER.classList.add('btn', 'btn-outline-primary', 'btn-small')
+    TRAILER.textContent = 'Trailer'
+    TRAILER.target = '_blank'
+    TRAILER.href = 'https://youtube.com/watch?v=' + item.youtubeId
+    CARDBODY.appendChild(TRAILER)
+
+    // more info
+    let MORE = document.createElement('a')
+    MORE.classList.add('btn', 'btn-outline-secondary', 'text-nowrap', 'btn-small', 'mx-2')
+    MORE.id = 'modalOpener'
+    MORE.textContent = 'More Info'
+    CARDBODY.appendChild(MORE)
+
+    // bookmark
+    let BOOKMARK = document.createElement('a')
+    BOOKMARK.classList.add('btn', 'btn-outline-success', 'btn-small')
+    BOOKMARK.textContent = 'Bookmark'
+    BOOKMARK.dataset.id = i
+    console.log();
+    CARDBODY.appendChild(BOOKMARK)
+
+    // add body to card
+    CARD.appendChild(CARDBODY);
+
+    
+  })
+
 })
 
-bookmarkedmovies.addEventListener('click', function (e) {
-    var b = Number(e.target.dataset.id);
-    // console.log(b)
-    if (e.target.matches('#remove')) {
+movie.addEventListener('click', e =>{
+  const a = Number(e.target.dataset.id);
+  let addMovies = arr => {
 
-    bookmarked.splice(b,1);
-    e.target.parentNode.parentNode.remove();
-    }
-    console.log(bookmarked)
-  })
+      let bookmarkedMovie = document.createElement('li');
+      bookmarkedmovies.appendChild(bookmarkedMovie);
+
+      let wrapper = document.createElement('div');
+      wrapper.setAttribute('class', 'p-2 border-top border-4 border-dark');
+      bookmarkedMovie.appendChild(wrapper);
+
+      let movieName = document.createElement('p');
+      movieName.setAttribute('class', 'h4');
+      movieName.textContent = arr[arr.length - 1];
+      wrapper.appendChild(movieName);
+
+      let buttonWrapper = document.createElement('div');
+      wrapper.appendChild(buttonWrapper);
+
+      let remove = document.createElement('button');
+      remove.setAttribute('type', 'button');
+      remove.setAttribute('id', 'remove')
+      remove.setAttribute('class', 'btn btn-danger');
+      remove.textContent = 'Remove'
+      buttonWrapper.appendChild(remove);
+  }
+  if(!bookmarked.includes(finalMovies[a].title)){
+      bookmarked.push(finalMovies[a].title);
+      addMovies(bookmarked);
+  }
+  
+})
+
+bookmarkedmovies.addEventListener('click', e=> {
+  let b = Number(e.target.dataset.id);
+  console.log(e.target);
+  if (e.target.matches('#remove')) {
+      
+      bookmarked.splice(b,1);
+      e.target.parentNode.parentNode.remove();
+  }
+  
+})

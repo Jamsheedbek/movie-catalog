@@ -12,16 +12,16 @@
 
 <body>
     <div class="container-sm" style="box-sizing: border-box;">
-        <h1 class="h1 text-center mb-4 mt-5">Movies catalog</h1>
+        <h1 class="h1 text-center mb-4 mt-5">Movies</h1>
             
         <div class="row border border-2 p-3">
                 <div class="col-4 ps-5 pe-5">
-                    <form class="row" action="#" method="POST">
-                        <input class="form-control mb-2" type="text" name="name" id="name" placeholder="ave" required>
-                        <input class="form-control mb-2" type="number" id="search" name="search" placeholder="5" required>
+                    <form id="form" class="row" action="#" method="POST">
+                        <input class="form-control mb-2" type="text" id="movieName" placeholder="name">
+                        <input class="form-control mb-2" type="number" id="rating" placeholder="rating">
                         
                         <select class="form-select mb-2" name="category" id="category">
-                            <option>All</option>
+                            <option class="pt-2 pb-2" value="" disabled selected hidden="true">Category</option>
                             <option value="Uncategorized">Uncategorized</option>
                             <option value="Documentary">Documentary</option>
                             <option value="Adventure">Adventure</option>
@@ -30,23 +30,20 @@
                             <option value="Horror">Horror</option>
                             <option value="Fantasy">Fantasy</option>
                         </select>
-                        
-                        <select class="form-select mb-2" name="rating" id="rating">
-                            <option>Rating</option>
-                            <option value="9">9</option>
-                            <option value="8">8</option>
-                            <option value="7">7</option>
-                            <option value="6">6</option>
-                            <option value="5">5</option>
-                            <option value="4">4</option>
-                            <option value="3">3</option>
-                            <option value="2">2</option>
-                            <option value="1">1</option>
+    
+                        <select class="form-select mb-2" name="rating" id="selectType">
+                            <option value="" selected disabled hidden='true'>sorting</option>
+                            <option value="nameA">Name(A-Z)</option>
+                            <option value="nameZ">Name(Z-A)</option>
+                            <option value="ratingLow">Rating(Starting from low)</option>
+                            <option value="ratingHigh">Rating(Starting from high)</option>
+                            <option value="yearLow">Year(Starting from low)</option>
+                            <option value="yearHigh">Year(Starting from high)</option>
                         </select>
                         
-                        <input class="btn btn-primary mb-2" type="submit" value="Search">
+                        <button id="search"class="btn btn-primary mb-2" type="button">Search</button>
                     </form>
-                    <div class="row border border-2" style="height: 295px; overflow-y: auto;">
+                    <div class="row" style="max-height: 295px; overflow-y: auto;">
                         <h3 class="h3 text-center">Bookmarked movies:</h3>
                         <ul id="bookmarkedmovies" style="list-style-type: none;"></ul>
 
@@ -54,6 +51,7 @@
                     
                 </div>
                 <div class="col-8 pe-5 ps-5">
+                    <div class="h3">Search result: <span id="result">0</span></div>
                     <div class="alert alert-info">
                         Use the form on the left to search for a movie
                     </div>
