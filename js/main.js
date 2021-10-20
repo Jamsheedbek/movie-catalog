@@ -1,6 +1,7 @@
 let movie = document.getElementById('movies');
 let bookmarkedmovies = document.getElementById('bookmarkedmovies');
 let search = document.getElementById('search');
+let categorie = document.getElementById('category')
 let bookmarked = [];
 var finalMovies;
 
@@ -173,3 +174,22 @@ bookmarkedmovies.addEventListener('click', e=> {
   }
   
 })
+
+let category = [];
+
+movies.forEach( element => {
+
+  element.categories.forEach(e => {
+
+    if(!category.includes(e)) category.push(e);
+    
+  });
+  
+});
+
+for(var i=0; i<category.length; i++){
+  let option = document.createElement('option');
+  option.value = category[i];
+  option.textContent = category[i];
+  categorie.appendChild(option);
+}
